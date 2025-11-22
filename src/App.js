@@ -1,59 +1,45 @@
+// src/App.js
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import styled from "styled-components";
+import MainPage from "./Pages/MainPage";
+import Gongstaurant from "./Pages/Cafeteria/Gongstaurant";
+import Cheomseong from "./Pages/Cafeteria/Cheomseong";
+import Gamggoteria from "./Pages/Cafeteria/Gamggoteria";
 
 function App() {
   return (
-    <Container>
-      <Card>
-        <Left>공식당</Left>
-        <Right>🥵</Right>
-      </Card>
+    <Router>
+      <AppWrapper>
+        <Title>럭키비키학식당</Title>
 
-      <Card>
-        <Left>복지관</Left>
-        <Right>😐</Right>
-      </Card>
-
-      <Card>
-        <Left>감꽃식당</Left>
-        <Right>🥳</Right>
-      </Card>
-    </Container>
+        <Routes>
+          <Route path="/" element={<MainPage />} />
+          <Route path="/cafeteria/gong" element={<Gongstaurant />} />
+          <Route path="/cafeteria/cheom" element={<Cheomseong />} />
+          <Route path="/cafeteria/gamggot" element={<Gamggoteria />} />
+        </Routes>
+      </AppWrapper>
+    </Router>
   );
 }
 
 export default App;
 
-// -------- styled-components ---------
-
-const Container = styled.div`
+const AppWrapper = styled.div`
   width: 100%;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 30px;
-  background-color: #ffffff;
+  padding-top: 80px;
+  box-sizing: border-box;
 `;
 
-const Card = styled.div`
-  width: 500px;
-  height: 90px;
-  border: 3px solid black;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-`;
-
-const Left = styled.div`
-  flex: 1;
-  text-align: center;
-  font-size: 28px;
-  font-weight: 600;
-`;
-
-const Right = styled.div`
-  width: 150px;
-  text-align: center;
-  font-size: 45px;
+const Title = styled.h1`
+  font-size: 48px;
+  font-weight: 800;
+  margin-bottom: 40px;
+  color: #ff66cc;
+  text-decoration: underline;
+  text-underline-offset: 10px;
 `;

@@ -2,9 +2,9 @@
 
 // src/Components/LuckyBikiModal.jsx
 import React from "react";
-import "./LuckyBikiModal.css";
+import "./LuckyVickyModal.css";
 
-export default function LuckyBikiModal({ open, onClose }) {
+export default function LuckyVickyModal({ open, onClose }) {
   if (!open) return null;
 
   return (

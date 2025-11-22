@@ -1,36 +1,63 @@
-// FE1
+// src/MainPage.js
 import styled from "styled-components";
-import CafeteriaMain from "./CafeteriaMain";
+import { Link } from "react-router-dom";
 
-export default function MainPage() {
+function MainPage() {
   return (
-    <Wrapper>
-      <Title>오늘의 혼잡도</Title>
+    <Container>
+      <CardLink to="/Cafeteria/Gongstaurant.jsx">
+        <Left>공식당</Left>
+        <Right>🥵</Right>
+      </CardLink>
 
-      <CardContainer>
-        <CafeteriaMain name="공식당" status="보통" />
-        <CafeteriaMain name="첨성관" status="여유" />
-        <CafeteriaMain name="감골식당" status="혼잡" />
-      </CardContainer>
-    </Wrapper>
+      <CardLink to="/Cafeteria/Cheomseong.jsx">
+        <Left>복지관</Left>
+        <Right>😐</Right>
+      </CardLink>
+
+      <CardLink to="/Cafeteria/Gamggoteria.jsx">
+        <Left>감꽃식당</Left>
+        <Right>🥳</Right>
+      </CardLink>
+    </Container>
   );
 }
 
-const Wrapper = styled.div`
-  padding: 30px;
+export default MainPage;
+
+// ---- styled-components ----
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  align-items: center;
 `;
 
-const Title = styled.h2`
-  font-size: 22px;
-  margin-bottom: 20px;
-`;
+const CardLink = styled(Link)`
+  width: 500px;
+  height: 90px;
+  border: 3px solid black;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-decoration: none;
+  color: inherit;
+  background-color: #f5f5f5;
 
-const CardContainer = styled.div`
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-
-  @media screen and (max-width: 600px) {
-    grid-template-columns: 1fr;
+  &:hover {
+    background-color: #eaeaea;
   }
+`;
+
+const Left = styled.div`
+  flex: 1;
+  text-align: center;
+  font-size: 28px;
+  font-weight: 600;
+`;
+
+const Right = styled.div`
+  width: 150px;
+  text-align: center;
+  font-size: 45px;
 `;
