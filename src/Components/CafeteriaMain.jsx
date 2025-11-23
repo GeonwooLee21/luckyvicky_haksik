@@ -1,12 +1,32 @@
 // src/Components/CafeteriaMain.jsx
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
-function CafeteriaMain({ title, message }) {
+function CafeteriaMain() {
+  const { name } = useParams();
+
+  // URL 파라미터(name)에 따라 제목/멘트 설정
+  const info = {
+    Gongstaurant: {
+      title: "공식당",
+      message: "20분 정도 기다리셔야 해요 ㅠㅠ",
+    },
+    Cheomseong: {
+      title: "복지관",
+      message: "지금은 평균 정도로 붐벼요!",
+    },
+    Gamggoteria: {
+      title: "감꽃식당",
+      message: "럭키비키! 바로 먹을 수 있어요 🎉",
+    },
+  };
+
+  const current = info[name] || info.Gongstaurant; // 혹시 이상한 name이면 공식당으로 fallback
+
   return (
     <Wrapper>
-      <TopBox>{title}</TopBox>
-      <MessageBox>{message}</MessageBox>
+      <TopBox>{current.title}</TopBox>
+      <MessageBox>{current.message}</MessageBox>
 
       <GraphBox>
         투표해주시면
