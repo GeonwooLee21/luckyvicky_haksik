@@ -5,6 +5,7 @@ import { Link, useParams, useLocation } from "react-router-dom";
 import CrowdChart from "./CrowdChart";
 import { isOpenNow } from "./OpeningHours";
 
+
 function CafeteriaPage() {
   const { name } = useParams();
   const location = useLocation();

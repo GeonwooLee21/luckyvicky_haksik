@@ -126,6 +126,21 @@ export async function getRemainingVotes() {
   });
 }
 
+// 일주일 전 동시간대 혼잡도 멘트 추가
+export async function getLastWeekStatus(cafeteria) {
+  // TODO: 나중에 API 연결 시 fetch로 교체
+  const dummy = {
+    Gongstaurant: { level: "busy" },
+    Cheomseong: { level: "normal" },
+    Gamggoteria: { level: "relaxed" },
+  };
+
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(dummy[cafeteria] || { level: "normal" });
+    }, 200);
+  });
+}
 
 
 /* 4) 사진 업로드
