@@ -1,9 +1,53 @@
+// ===================================
 // FE1
 // src/Components/MainPage.jsx
+// ===================================
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { isOpenNow } from "./OpeningHours";
+import StatusBadge from "./StatusBadge"; // 추가
 
+export default function MainPage() {
+  const navigate = useNavigate();
+  const now = new Date();
+
+  // 리팩토링 완료!
+  const cafeterias = [
+    { key: "Gongstaurant", name: "공식당", emoji: "🥵", id: 1 },
+    { key: "Cheomseong", name: "복지관", emoji: "😐", id: 2 },
+    { key: "Gamggoteria", name: "감꽃식당", emoji: "🥳", id: 3 },
+  ];
+
+  return (
+    <List>
+      {cafeterias.map((cafe) => {
+        const open = isOpenNow(cafe.key, now);
+
+        return (
+          <Card
+            key={cafe.key}
+            onClick={() => navigate(`/Cafeteria/${cafe.key}`)}
+            $isOpen={open}
+          >
+            <Name>{cafe.name}</Name>
+            <Emoji>{cafe.emoji}</Emoji>
+
+            <StatusContainer>
+              <StatusBadge restaurantId={cafe.id} />
+            </StatusContainer>
+
+            {!open && (
+              <Overlay>{`${cafe.name}은 지금 오픈 준비 중이에요💤`}</Overlay>
+            )}
+          </Card>
+        );
+      })}
+    </List>
+  );
+}
+
+
+/* ---------------- styled-components ---------------- */
 const List = styled.div`
   display: flex;
   flex-direction: column;
@@ -19,7 +63,7 @@ const Card = styled.button`
   background-color: ${({ theme }) => theme.colors.cardBg};
   
   position: relative;
-  
+
   display: flex;
   align-items: center;
   justify-content: center;
@@ -37,11 +81,17 @@ const Card = styled.button`
   }
 `;
 
+const StatusContainer = styled.div`
+  position: absolute;
+  right: 20px;
+  bottom: 14px;
+`;
+
 const Overlay = styled.div`
   position: absolute;
   inset: 0;
   border-radius: 12px;
-  background: #ffffff; /* 완전 불투명 */
+  background: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -53,44 +103,10 @@ const Overlay = styled.div`
   pointer-events: none;
 `;
 
-const Name = styled.span`
-`;
+const Name = styled.span``;
 
 const Emoji = styled.span`
   position: absolute;
   right: 20px;
   font-size: 22px;
 `;
-
-export default function MainPage() {
-  const navigate = useNavigate();
-  const now = new Date();
-
-  const cafeterias = [
-    { id: "Gongstaurant", name: "공식당", emoji: "🥵" },
-    { id: "Cheomseong", name: "복지관", emoji: "😐" },
-    { id: "Gamggoteria", name: "감꽃식당", emoji: "🥳" },
-  ];
-
-  return (
-    <List>
-      {cafeterias.map((cafe) => {
-        const open = isOpenNow(cafe.id, now); // 지금 오픈 여부
-
-        return (
-          <Card
-            key={cafe.id}
-            onClick={() => navigate(`/Cafeteria/${cafe.id}`)}
-            $isOpen={open}
-          >
-            <Name>{cafe.name}</Name>
-            <Emoji>{cafe.emoji}</Emoji>
-
-            {/* 영업시간이 아닐 때만 오버레이 표시 */}
-            {!open && <Overlay>{`${cafe.name}은 지금 오픈 준비 중이에요💤`}</Overlay>}
-          </Card>
-        );
-      })}
-    </List>
-  );
-}

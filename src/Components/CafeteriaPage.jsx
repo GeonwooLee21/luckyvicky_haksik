@@ -1,10 +1,30 @@
+// ===================================
 // FE1 & FE2 공통 상세페이지 레이아웃
 // src/Components/CafeteriaPage.jsx
+// ===================================
 import styled from "styled-components";
 import { Link, useParams, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";          // 추가
 import CrowdChart from "./CrowdChart";
 import { isOpenNow } from "./OpeningHours";
+import { getRestaurantStatus } from "../Api";        // 추가
 
+// FE 라우트 name → 백엔드 restaurantId 매핑
+const RESTAURANT_IDS = {
+  Gongstaurant: 1,
+  Cheomseong: 2,
+  Gamggoteria: 3,
+};
+
+// 혼잡도 값 -> 혼잡도 멘트
+// 기준은 일단 예시. 팀에서 정한 기준으로 추후 수정 예정.
+function congestionValueToLabel(value) {
+  if (value == null) return null;
+
+  if (value >= 70) return "혼잡해요";
+  if (value >= 40) return "보통이에요";
+  return "여유로워요";
+}
 
 function CafeteriaPage() {
   const { name } = useParams();
@@ -32,10 +52,38 @@ function CafeteriaPage() {
   // 현재 시간 기준 오픈 여부
   const open = isOpenNow(name);
 
+  // 혼잡도 텍스트 상태
+  const [congestionLabel, setCongestionLabel] = useState(null);
+
+  useEffect(() => {
+    const restaurantId = RESTAURANT_IDS[name];
+    if (!restaurantId) {
+      setCongestionLabel(null);
+      return;
+    }
+
+    getRestaurantStatus(restaurantId)
+      .then((data) => {
+        // API 예시 응답: { "RestaurantId": 1, "CongestionOfId1": 100 }
+        const value = data?.CongestionOfId1;
+        const label = congestionValueToLabel(value);
+        setCongestionLabel(label);
+      })
+      .catch((err) => {
+        console.error("식당 혼잡도 조회 실패:", err);
+        setCongestionLabel(null);
+      });
+  }, [name]);
+
+  // 상단 첫 번째 카드에 표시할 문장
+  const titleText = congestionLabel
+    ? `${current.title}은 ${congestionLabel}` // 예: "공식당은 혼잡해요"
+    : current.title;                         // 조회 전/실패 시: "공식당"
+
   return (
     <Wrapper>
-      {/* 식당 이름 */}
-      <Card>{current.title}</Card>
+      {/* 식당 이름 + 혼잡도 */}
+      <Card>{titleText}</Card>
 
       {/* 안내 멘트: 오픈 여부에 따라 변경 */}
       <Card>
@@ -69,13 +117,13 @@ function CafeteriaPage() {
       )}
 
       <ButtonRow>
-      {/* 항상 보이는 버튼 */}
+        {/* 항상 보이는 버튼 */}
         <StyledLink to="/">첫 화면으로 돌아가기</StyledLink>
 
         {/* 오픈 시간에만 보이는 버튼 */}
         {open && (
           <StyledButton as={Link} to={`/vote/${name}`}>
-          투표하기
+            투표하기
           </StyledButton>
         )}
       </ButtonRow>
@@ -86,7 +134,6 @@ function CafeteriaPage() {
 export default CafeteriaPage;
 
 /* ---------------- styled-components ---------------- */
-
 const Wrapper = styled.div`
   width: 100%;
   max-width: 350px;

@@ -1,9 +1,19 @@
-// FE2
-// src/Api.js
+// ================================
+// FE1&FE2 Api.js
+// 백엔드 API 명세서 기준으로 작성
+// ================================
 
-const BASE_URL = "http://localhost:4000"; // 백엔드 서버 주소로 바꾸기
+// ================================
+// 1) 백엔드 기본 주소 설정
+// ================================
+// 예: "http://localhost:8080"
+//    "http://147.46.xxx.xxx:8080"
+export const BASE_URL = "http://15.164.171.142:8080";
 
-// 공통 fetch 함수 (에러 처리까지 한 번에)
+
+// ================================
+// 2) 공통 request() 함수
+// ================================
 async function request(path, options = {}) {
   const url = `${BASE_URL}${path}`;
 
@@ -11,6 +21,7 @@ async function request(path, options = {}) {
     const res = await fetch(url, {
       headers: {
         "Content-Type": "application/json",
+        ...(options.headers || {})
       },
       ...options,
     });
@@ -19,116 +30,166 @@ async function request(path, options = {}) {
       throw new Error(`API error: ${res.status} ${res.statusText}`);
     }
 
-    // 응답이 비어있는 경우도 있을 수 있어서 text 먼저 읽음
+    // 응답이 JSON일 수도 있고 비어있을 수도 있으므로
     const text = await res.text();
     return text ? JSON.parse(text) : null;
+
   } catch (err) {
-    console.error("[API ERROR]", err);
-    throw err; // 나중에 컴포넌트에서 try/catch로 처리 가능
+    console.error(`[API ERROR] ${path}`, err);
+    throw err;
   }
 }
 
-// 사용자 토큰을 보관 & 없으면 생성하는 함수
-async function ensureUserToken() {
-  // 1) 이미 저장된 토큰이 있으면 그걸 바로 사용
-  let token = localStorage.getItem("userToken");
-  if (token) return token;
 
-  // 2) 없으면 서버에 유저 생성 요청을 보내고 토큰을 받는다
-  // (백엔드에서 POST /api/user 로 토큰을 준다고 가정)
+// ================================
+// 3) 사용자 UID / 토큰 / 유저 생성
+// ================================
+
+// 3-1. 랜덤 UID 생성 + 저장 (프론트 클라이언트 고유 식별자)
+function getOrCreateClientUid() {
+  let uid = localStorage.getItem("clientUid");
+  if (!uid) {
+    uid = crypto.randomUUID();   // 또는 uuidv4()
+    localStorage.setItem("clientUid", uid);
+  }
+  return uid;
+}
+
+// 3-2. 서버에서 userId, userToken 생성
+async function createUserOnServer() {
+  const clientUid = getOrCreateClientUid();
+
+  // POST /api/user  (명세서 기준)
   const res = await request("/api/user", {
     method: "POST",
+    body: JSON.stringify({ clientUid }),  // 백엔드와 필드명 맞추기
   });
 
-  token = res.token; // 응답 형식: { token: "abcd1234" }
-  localStorage.setItem("userToken", token);
-  return token;
+  // 응답 예시:
+  // {
+  //   "userId": 1,
+  //   "userToken": "550e8400-e29b-41d4-a716-446655440000",
+  //   "remainingVoteCount": 2
+  // }
+
+  localStorage.setItem("userId", String(res.userId));
+  localStorage.setItem("userToken", res.userToken);
+  localStorage.setItem("remainingVoteCount", String(res.remainingVoteCount));
+
+  return res;
+}
+
+// 3-3. FE에서 “유저를 반드시 확보”하는 함수
+//      → userId, userToken이 없으면 서버에서 생성
+export async function ensureUser() {
+  const existingToken = localStorage.getItem("userToken");
+  const existingId = localStorage.getItem("userId");
+
+  if (existingToken && existingId) {
+    return {
+      userId: Number(existingId),
+      userToken: existingToken,
+      remainingVoteCount: Number(
+        localStorage.getItem("remainingVoteCount") ?? 0
+      ),
+    };
+  }
+
+  // 없으면 새 유저 생성
+  return await createUserOnServer();
 }
 
 
-/* 1) 현재 학식당 혼잡도 가져오기
-GET /cafeterias/:id/status  를 부른다고 가정
-예) 응답: { status: "busy" }  // "busy" | "normal" | "relaxed */
-export async function getCafeteriaStatus(cafeteriaId) {
-  return request(`/cafeterias/${cafeteriaId}/status`, {
+// ================================
+// 4) 전체 식당 혼잡도 조회
+// GET /api/restaurant
+// ================================
+export async function getAllRestaurantStatus() {
+  return request("/api/restaurant", { method: "GET" });
+}
+
+// ================================
+// 5) 식당 한 곳 혼잡도 조회
+// GET /api/restaurant/{id}
+// (예시 응답: { "RestaurantId": 1, "CongestionOfId1": 100 })
+// ================================
+export async function getRestaurantStatus(restaurantId) {
+  return request(`/api/restaurant/${restaurantId}`, {
     method: "GET",
   });
 }
 
-/* 2) 지난주 동일 요일/시간대 데이터 가져오기
-GET /cafeterias/:id/history  를 부른다고 가정
-예) 응답: { history: [ { time: "12:00", level: "busy" }, ... ] } */
-export async function getCafeteriaHistory(cafeteriaId) {
-  return request(`/cafeterias/${cafeteriaId}/history`, {
+
+// ================================
+// 6) 지난주 동일 요일/시간대 히스토리 조회
+// GET /api/restaurant/{id}/history
+// ================================
+export async function getCafeteriaHistory(restaurantId) {
+  return request(`/api/restaurant/${restaurantId}/history`, {
     method: "GET",
   });
 }
 
-/* 3) 혼잡도 투표 보내기 */
-// 혼잡도/대기시간 투표 전송
-// 백엔드 명세: POST /api/vote
-// body: { userId, restaurantId, congestionLevel, waitingTime }
+
+// ================================
+// 7) 혼잡도 + 대기시간 투표
+// POST /api/vote
+// ================================
 export async function postVote(cafeteriaKey, level, waitingMinutes) {
-  const token = await ensureUserToken(); // 이미 Api.js 에 있는 함수 사용
+  const user = await ensureUser();
+  const token = user.userToken;
+  const userId = user.userId;
 
-  // 우리 FE에서 쓰는 name → 백엔드 restaurantId 매핑
   const RESTAURANT_IDS = {
     Gongstaurant: 1,
     Cheomseong: 2,
     Gamggoteria: 3,
   };
-  const restaurantId = RESTAURANT_IDS[cafeteriaKey];
 
-  // busy/normal/relaxed → HIGH/MEDIUM/LOW 매핑
   const LEVEL_MAP = {
     busy: "HIGH",
     normal: "MEDIUM",
     relaxed: "LOW",
   };
 
-  return request(`/api/vote`, {
+  const restaurantId = RESTAURANT_IDS[cafeteriaKey];
+
+  return request("/api/vote", {
     method: "POST",
     headers: {
-      "Content-Type": "application/json",
-      "X-User-Token": token, // 백엔드가 토큰으로 userId를 찾도록
+      "X-User-Token": token,
     },
     body: JSON.stringify({
+      userId,                    // 필요하다면 추가
       restaurantId,
       congestionLevel: LEVEL_MAP[level],
-      waitingTime: waitingMinutes, // 숫자 (분)
+      waitingTime: waitingMinutes,
     }),
   });
 }
 
-
-export async function createUser() {
-  return { userId: "TEST_USER" }; // 임시
-}
-
-export async function getUserVoteRemain(userId) {
-  return { remaining: 2 }; // 임시
-}
-
-export async function sendVote(payload) {
-  console.log("임시 투표전송", payload);
-  return { ok: true };
-}
-
-/* 백엔드에서 잔여 투표 횟수 가져오기 */
+// ================================
+// 8) 잔여 투표 횟수 조회
+// GET /api/user/remaining-votes
+// ================================
 export async function getRemainingVotes() {
-  const token = await ensureUserToken();
+  const user = await ensureUser();
 
-  return request("/api/user/remaining-votes", {
+  return request("/api/user/vote", {
     method: "GET",
     headers: {
-      "X-User-Token": token,
+      "X-User-Token": user.userToken,
     },
   });
 }
 
-// 일주일 전 동시간대 혼잡도 멘트 추가
+
+// ================================
+// 9) 지난주 동일 시간대 텍스트용 (임시 더미)
+// FE2 lastWeekText.jsx에서 사용
+// ================================
 export async function getLastWeekStatus(cafeteria) {
-  // TODO: 나중에 API 연결 시 fetch로 교체
+  // TODO: 백엔드 연결되면 교체
   const dummy = {
     Gongstaurant: { level: "busy" },
     Cheomseong: { level: "normal" },
@@ -136,40 +197,40 @@ export async function getLastWeekStatus(cafeteria) {
   };
 
   return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(dummy[cafeteria] || { level: "normal" });
-    }, 200);
+    setTimeout(() => resolve(dummy[cafeteria]), 200);
   });
 }
 
 
-/* 4) 사진 업로드
-POST /cafeterias/:id/photo
-FormData로 파일 전송 (이건 JSON이 아니라 multipart/form-data) */
-export async function uploadPhoto(cafeteriaId, file) {
-  const url = `${BASE_URL}/cafeterias/${cafeteriaId}/photo`;
+// ================================
+// 10) 사진 업로드
+// POST /api/restaurant/{id}/photo
+// ================================
+export async function uploadPhoto(restaurantId, file) {
+  const url = `${BASE_URL}/api/restaurant/${restaurantId}/photo`;
+
   const formData = new FormData();
   formData.append("photo", file);
 
   const res = await fetch(url, {
     method: "POST",
-    body: formData, // 이 경우엔 Content-Type 자동으로 설정됨
+    body: formData,
   });
 
   if (!res.ok) {
-    throw new Error(`Photo upload error: ${res.status} ${res.statusText}`);
+    throw new Error(`Photo upload error: ${res.status}`);
   }
 
   const text = await res.text();
   return text ? JSON.parse(text) : null;
 }
 
-/* 예측 대기시간 조회
-   GET /api/restaurant/{restaurant-id}/wait-time (가정)
-   응답 예시: { waitMinutes: 20 }
-*/
+
+// ================================
+// 11) 예측 대기시간 조회
+// GET /api/restaurant/{id}/wait-time
+// ================================
 export async function getPredictedWaitTime(restaurantId) {
-  // 실제 URL은 백엔드가 정해주는 대로 여기만 수정하면 됨
   return request(`/api/restaurant/${restaurantId}/wait-time`, {
     method: "GET",
   });

@@ -6,7 +6,7 @@ export const CAFETERIA_HOURS = {
   // 공식당 운영 시간
   Gongstaurant: [
     { days: [1, 2, 3, 4, 5], open: "10:00", close: "15:00" },
-    { days: [1, 2, 3, 4, 5], open: "16:00", close: "21:00" },
+    { days: [1, 2, 3, 4, 5], open: "16:00", close: "23:00" },
   ],
 
   // 복지관 운영 시간

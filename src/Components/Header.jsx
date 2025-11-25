@@ -25,7 +25,7 @@ export default function Header() {
   return (
     <Wrapper>
       <Title>럭키비키학식당</Title>
-      <Subtitle>지금 어디가 덜 붐비는지 한 눈에 확인해보세요 👀</Subtitle>
+      <Subtitle>학식당의 혼잡도를 한 눈에 확인해보세요👀</Subtitle>
     </Wrapper>
   );
 }

@@ -1,6 +1,7 @@
-// src/Components/VotePage.jsx
+// ======================================================
 // FE2: 투표 화면 + 완료 모달 + 잔여투표횟수 표시 (FE1 레이아웃 적용)
-
+// src/Components/VotePage.jsx
+// ======================================================
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useParams, useNavigate } from "react-router-dom";
@@ -23,7 +24,6 @@ const WAIT_OPTIONS = [
   "20분 이상",
 ];
 
-
 function VotePage() {
   const { name } = useParams(); // Gongstaurant / Cheomseong / Gamggoteria
   const navigate = useNavigate();
@@ -35,29 +35,27 @@ function VotePage() {
   const [selectedWait, setSelectedWait] = useState(null);   // "5분" 같은 문자열
   const [showModal, setShowModal] = useState(false);
 
-  // ----- 1) 처음 진입 시 userId + 잔여 투표횟수 가져오기 -----
+  // ----- 1) 처음 진입 시 잔여 투표횟수 가져오기 -----
   useEffect(() => {
-  async function loadRemain() {
-    try {
-      // 백엔드 응답: { userId, remainingVoteCount } 가정
-      const data = await getRemainingVotes();
-      setRemaining(data.remainingVoteCount);
-    } catch (err) {
-      console.error("잔여 투표횟수 조회 실패:", err);
-    } finally {
-      setLoadingRemain(false);
+    async function loadRemain() {
+      try {
+        // 백엔드 응답: { "remainingVoteCount": 2 }
+        const data = await getRemainingVotes();
+        setRemaining(data.remainingVoteCount);
+      } catch (err) {
+        console.error("잔여 투표횟수 조회 실패:", err);
+      } finally {
+        setLoadingRemain(false);
+      }
     }
-  }
 
-  loadRemain();
-}, []);
+    loadRemain();
+  }, []);
 
-
-
-  // 오늘 이미 2번 다 사용했는지 여부
+  // 오늘 이미 제공된 투표 횟수(2번) 다 사용했는지 여부
   const noChanceLeft = remaining === 0;
 
-  // ----- 2) 혼잡도 / 대기시간 선택 -----
+  // ---------- 2) 혼잡도 / 대기시간 선택 ----------
   const handleLevelClick = (level) => {
     if (noChanceLeft) return;
     setSelectedLevel(level);
@@ -69,45 +67,43 @@ function VotePage() {
     setSelectedWait(wait);
   };
 
-  // ----- 3) 투표하기 클릭 -----
+  // ------------- 3) 투표하기 클릭 --------------
   const handleSubmit = async () => {
-  if (!selectedLevel || !selectedWait) return;
+    if (!selectedLevel || !selectedWait) return;
 
-  if (noChanceLeft) {
-    alert("오늘 투표 가능 횟수를 모두 사용하셨어요!");
-    return;
-  }
-
-  try {
-    const cafeteriaId = name;
-
-    // "10분", "15분", "바로 입장" 같은 텍스트 → 숫자(분)로 변환
-    let waitingMinutes = 0;
-    if (selectedWait === "바로 입장") {
-      waitingMinutes = 0;
-    } else {
-      // "10분" → 10
-      waitingMinutes = parseInt(selectedWait, 10);
+    if (noChanceLeft) {
+      alert("오늘 투표 가능 횟수를 모두 사용하셨어요!");
+      return;
     }
 
-    // Api.js 의 postVote(식당키, 혼잡도, 대기시간분)
-    await postVote(cafeteriaId, selectedLevel, waitingMinutes);
+    try {
+      // Gongstaurant / Cheomseong / Gamggoteria
+      const cafeteriaId = name; 
 
-    // 투표 후 최신 잔여횟수 다시 조회
-    const data = await getRemainingVotes();
-    setRemaining(data.remainingVoteCount);
+      // "10분", "15분", "바로 입장" 같은 텍스트 → 숫자(분)로 변환
+      let waitingMinutes = 0;
+      if (selectedWait === "바로 입장") {
+        waitingMinutes = 0;
+      } else {
+        // "20분 이상"도 일단 20으로 보냄 (parseInt가 앞의 숫자만 가져옴)
+        waitingMinutes = parseInt(selectedWait, 10);
+      }
 
-    setShowModal(true);
-  } catch (err) {
-    console.error("투표 전송 실패:", err);
-    alert("투표에 실패했어요. 잠시 후 다시 시도해 주세요.");
-  }
-};
+      // Api.js 의 postVote(식당키, 혼잡도, 대기시간분)
+      await postVote(cafeteriaId, selectedLevel, waitingMinutes);
 
+      // 투표 후 최신 잔여횟수 다시 조회
+      const data = await getRemainingVotes();
+      setRemaining(data.remainingVoteCount);
 
+      setShowModal(true);
+    } catch (err) {
+      console.error("투표 전송 실패:", err);
+      alert("투표에 실패했어요. 잠시 후 다시 시도해 주세요.");
+    }
+  };
 
-
-  // ----- 4) 모달에서 확인 눌렀을 때 -----
+  // ---------- 4) 모달에서 확인 눌렀을 때 ----------
   const handleModalClose = () => {
     setShowModal(false);
     navigate(`/cafeteria/${name}`, {
@@ -146,7 +142,7 @@ function VotePage() {
         ))}
       </LevelRow>
 
-      {/* 대기시간 선택: 혼잡도 선택 후에만 표시 */}  
+      {/* 대기시간 선택: 혼잡도 선택 후에만 표시 */}
       {selectedLevel && (
         <>
           <SectionTitle>대기시간은 어느 정도인가요?</SectionTitle>
@@ -163,7 +159,6 @@ function VotePage() {
           ))}
         </>
       )}
-
 
       {/* 투표하기 버튼: 둘 다 선택된 경우에만 표시 */}
       {selectedLevel && selectedWait && (
@@ -193,8 +188,7 @@ function VotePage() {
 
 export default VotePage;
 
-/* ------------ styled-components (FE1 레이아웃 스타일) ------------ */
-
+/* ------------ styled-components ------------- */
 const VoteWrapper = styled.div`
   width: 100%;
   max-width: 360px;
@@ -287,7 +281,7 @@ const OptionButton = styled.button`
     ${({ disabled, theme }) =>
       !disabled && `border-color: ${theme.colors.primary};`}
   }
-  
+
   & + & {
     margin-top: 0px;
   }
@@ -315,7 +309,7 @@ const SubmitButton = styled.button`
   }
 `;
 
-/* -------- Modal -------- */
+/* -------------- Modal -------------- */
 const ModalBackdrop = styled.div`
   position: fixed;
   inset: 0;

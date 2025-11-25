@@ -1,5 +1,7 @@
+// ===================================
 // FE1
-// src/components/layout/AppLayout.jsx
+// src/Components/AppLayout.jsx
+// ===================================
 import styled from "styled-components";
 import Header from "./Header";
 import Footer from "./Footer";
