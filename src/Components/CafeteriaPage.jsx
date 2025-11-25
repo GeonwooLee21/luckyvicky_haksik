@@ -4,10 +4,10 @@
 // ===================================
 import styled from "styled-components";
 import { Link, useParams, useLocation } from "react-router-dom";
-import { useEffect, useState } from "react";          // 추가
+import { useEffect, useState } from "react";
 import CrowdChart from "./CrowdChart";
 import { isOpenNow } from "./OpeningHours";
-import { getRestaurantStatus } from "../Api";        // 추가
+import { getRestaurantStatus } from "../Api";
 
 // FE 라우트 name → 백엔드 restaurantId 매핑
 const RESTAURANT_IDS = {
@@ -54,6 +54,8 @@ function CafeteriaPage() {
 
   // 혼잡도 텍스트 상태
   const [congestionLabel, setCongestionLabel] = useState(null);
+  // 혼잡도 로딩 여부
+  const [isLoadingStatus, setIsLoadingStatus] = useState(false);
 
   useEffect(() => {
     const restaurantId = RESTAURANT_IDS[name];
@@ -62,23 +64,41 @@ function CafeteriaPage() {
       return;
     }
 
+    setIsLoadingStatus(true); // ✅ 백엔드 호출 시작
+
     getRestaurantStatus(restaurantId)
       .then((data) => {
-        // API 예시 응답: { "RestaurantId": 1, "CongestionOfId1": 100 }
-        const value = data?.CongestionOfId1;
+        // ✅ 실제 백엔드 응답 형태:
+        // { "id": 1, "name": "공식당", "currentCongestion": 70 }
+        const value =
+          data?.currentCongestion ?? data?.CongestionOfId1 ?? null; // 둘 다 대응
+
         const label = congestionValueToLabel(value);
         setCongestionLabel(label);
+        setIsLoadingStatus(false); // ✅ 응답 도착
       })
       .catch((err) => {
         console.error("식당 혼잡도 조회 실패:", err);
         setCongestionLabel(null);
+        setIsLoadingStatus(false); // ✅ 에러 나도 로딩 종료
       });
   }, [name]);
 
   // 상단 첫 번째 카드에 표시할 문장
-  const titleText = congestionLabel
-    ? `${current.title}은 ${congestionLabel}` // 예: "공식당은 혼잡해요"
-    : current.title;                         // 조회 전/실패 시: "공식당"
+  let titleText;
+  if (!open) {
+    // 🔹 오픈 전/닫힌 상태면 무조건 식당 이름만
+    titleText = current.title;
+  } else if (isLoadingStatus) {
+    // 🔹 영업 중 + 혼잡도 조회 중
+    titleText = `${current.title}은 혼잡도 집계 중이에요`;
+  } else if (congestionLabel) {
+    // 🔹 영업 중 + 혼잡도 조회 완료
+    titleText = `${current.title}은 ${congestionLabel}`; // 예: "공식당은 혼잡해요"
+  } else {
+    // 🔹 영업 중이긴 한데 데이터가 없거나 실패한 경우
+    titleText = `${current.title}은 혼잡도 집계 중이에요`;
+  }
 
   return (
     <Wrapper>

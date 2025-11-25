@@ -13,9 +13,9 @@ export default function MainPage() {
 
   // 리팩토링 완료!
   const cafeterias = [
-    { key: "Gongstaurant", name: "공식당", emoji: "🥵", id: 1 },
-    { key: "Cheomseong", name: "복지관", emoji: "😐", id: 2 },
-    { key: "Gamggoteria", name: "감꽃식당", emoji: "🥳", id: 3 },
+    { key: "Gongstaurant", name: "공식당", id: 1 },
+    { key: "Cheomseong", name: "복지관", id: 2 },
+    { key: "Gamggoteria", name: "감꽃식당", id: 3 },
   ];
 
   return (
@@ -68,7 +68,7 @@ const Card = styled.button`
   align-items: center;
   justify-content: center;
 
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 600;
 
   cursor: pointer;

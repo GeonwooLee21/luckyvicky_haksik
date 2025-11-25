@@ -16,9 +16,9 @@ function congestionToLevel(value) {
 
 // 영어 키 → 한글 라벨
 const LABEL_MAP = {
-  busy: "혼잡",
-  normal: "보통",
-  relaxed: "여유",
+  busy: "혼잡🥵",
+  normal: "보통😐",
+  relaxed: "여유🥳",
   none: "집계 전",
 };
 
@@ -38,7 +38,7 @@ function StatusBadge({ restaurantId }) {
         setError(false);
 
         const list = await getAllRestaurantStatus();
-        
+
         // list에서 내 식당 찾아오기
         const found = list.find((item) => item.id === restaurantId);
 
@@ -79,7 +79,7 @@ const Badge = styled.span`
   align-items: center;
   padding: 4px 10px;
   border-radius: 999px;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
 
   background-color: ${({ level }) => {
