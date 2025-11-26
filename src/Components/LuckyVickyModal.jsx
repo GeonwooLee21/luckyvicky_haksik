@@ -5,8 +5,47 @@
 import React from "react";
 import "./LuckyVickyModal.css";
 
-export default function LuckyVickyModal({ open, onClose }) {
+export default function LuckyVickyModal({ open, onClose, level }) {
   if (!open) return null;
+
+  // 혼잡도 level에 따른 멘트 분기
+  // level: "busy" | "normal" | "relaxed" (없으면 기본 멘트)
+  const getDescByLevel = (level) => {
+    switch (level) {
+      case "busy":
+        return (
+          <>
+            지금은 꽤 붐비는 시간이에요.
+            <br />
+            그래도 학식 먹는 당신, 이미 럭키비키 ✨
+          </>
+        );
+      case "normal":
+        return (
+          <>
+            지금은 적당히 붐비는 시간이에요.
+            <br />
+            조금만 기다리면 맛있게 드실 수 있어요!
+          </>
+        );
+      case "relaxed":
+        return (
+          <>
+            지금은 여유로운 시간이에요!
+            <br />
+            편하게 식사하러 가볼까요?
+          </>
+        );
+      default:
+        return (
+          <>
+            지금도 학식 먹기 나쁘지 않은 시간이네요.
+            <br />
+            오늘도 럭키비키 하세요 😊
+          </>
+        );
+    }
+  };
 
   return (
     <div className="lucky-overlay" onClick={onClose}>
@@ -30,11 +69,8 @@ export default function LuckyVickyModal({ open, onClose }) {
         <div className="lucky-content">
           <p className="lucky-subtitle">오늘의 럭키 타임</p>
           <h2 className="lucky-title">럭키비키시네요 🎉</h2>
-          <p className="lucky-desc">
-            지금은 여유로운 시간이에요!
-            <br />
-            편하게 식사하러 가볼까요?
-          </p>
+
+          <p className="lucky-desc">{getDescByLevel(level)}</p>
 
           <button className="lucky-button" onClick={onClose}>
             좋아요!
@@ -44,4 +80,3 @@ export default function LuckyVickyModal({ open, onClose }) {
     </div>
   );
 }
-

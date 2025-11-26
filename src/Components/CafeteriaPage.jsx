@@ -31,6 +31,20 @@ function congestionValueToLabel(value) {
   return "여유"; // 0~39
 }
 
+// 혼잡도 라벨 → 모달용 level 키
+function labelToLevel(label) {
+  switch (label) {
+    case "혼잡":
+      return "busy";
+    case "보통":
+      return "normal";
+    case "여유":
+      return "relaxed";
+    default:
+      return null;
+  }
+}
+
 // 혼잡도 라벨 → 자연스러운 문장
 function labelToSentence(label) {
   if (!label) return null;
@@ -97,18 +111,14 @@ function CafeteriaPage() {
       try {
         const res = await getRestaurantStatus(restaurantId);
 
-        // 백엔드 응답 필드명에 맞게 수정 (currentCongestion)
-        // const rawValue = Number(res.currentCongestion); // 30 이런 값
-        
         const rawValue = res?.congestionValue;
         const label = congestionValueToLabel(rawValue);
         if (cancelled) return;
 
         setCongestionLabel(label);
 
-        // 응답까지 받은 뒤, 여유 상태 + 오픈 중이면 모달 오픈
-        // (원하면 voted도 조건에 추가 가능: open && label === "여유" && voted)
-        if (open && label === "여유") {
+        // ✅ 오픈 중이고, 혼잡/보통/여유 라벨이 있으면 항상 럭키비키 모달
+        if (open && label) {
           setShowLuckyModal(true);
         }
       } catch (err) {
@@ -188,16 +198,18 @@ function CafeteriaPage() {
         )}
       </ButtonRow>
 
-      {/* 여유일 때만 띄우는 럭키비키 모달 */}
+      {/* ✅ 모든 혼잡도 상태에서 띄우는 럭키비키 모달 */}
       <LuckyVickyModal
         open={showLuckyModal}
         onClose={() => setShowLuckyModal(false)}
+        level={labelToLevel(congestionLabel)}
       />
     </Wrapper>
   );
 }
 
 export default CafeteriaPage;
+
 
 /* ---------------- styled-components ---------------- */
 
