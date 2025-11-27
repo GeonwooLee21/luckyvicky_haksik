@@ -7,7 +7,6 @@ import { Link, useParams, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import CrowdChart from "./CrowdChart";
 import { isOpenNow } from "./OpeningHours";
-import LastWeekText from "./lastWeekText";
 import LuckyVickyModal from "./LuckyVickyModal";
 import { getRestaurantStatus } from "../Api";
 import { GONGSTAURANT_DUMMY } from "../Dummy/Gongstaurant_Dummy";
@@ -224,9 +223,6 @@ function CafeteriaPage() {
             <>
               {/* 2번 기능: 그래프 */}
               <CrowdChart data={chartData} />
-
-              {/* 3번 기능: "일주일 전 이 시간대에는 OOO했어요" */}
-              <LastWeekText cafeteria={name} />
             </>
           ) : (
             <>
