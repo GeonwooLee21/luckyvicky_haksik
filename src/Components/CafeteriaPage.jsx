@@ -308,8 +308,11 @@ const ChartCard = styled(Card)`
   color: ${({ theme }) => theme.colors.muted};
 
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;   /* ✅ 세로 배치 */
+  align-items: center;      /* 가운데 정렬 */
+  justify-content: center;  /* 세로 방향도 가운데 정렬 */
+  gap: 16px;                /* ✅ 멘트와 그래프 사이 간격 */
+
   line-height: 1.6;
 `;
 
