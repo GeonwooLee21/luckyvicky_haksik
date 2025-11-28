@@ -1,4 +1,8 @@
+// ===============================
 // FE1
+// src/Styles/Theme.js
+// ===============================
+
 export const theme = {
   colors: {
     primary: "#ff4faf",   // 럭키비키 핑크

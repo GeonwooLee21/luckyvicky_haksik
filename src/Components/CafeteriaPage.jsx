@@ -272,7 +272,6 @@ function CafeteriaPage() {
 
 export default CafeteriaPage;
 
-/* ---------------- styled-components ---------------- */
 const Wrapper = styled.div`
   width: 100%;
   max-width: 350px;
@@ -295,6 +294,7 @@ const Card = styled.div`
   background-color: ${({ theme }) => theme.colors.cardBg};
   font-size: 15px;
   font-weight: 600;
+  color: ${({ theme }) => theme.colors.text};   /* 🔹 텍스트 색 명시 */
 `;
 
 // 메인 텍스트 카드 (멘트용)
@@ -346,7 +346,7 @@ const StyledLink = styled(Link)`
   border: 1px solid ${({ theme }) => theme.colors.border};
   background-color: white;
   text-decoration: none;
-  color: ${({ theme }) => theme.colors.text};
+  color: ${({ theme }) => theme.colors.text};   /* ✅ 링크 글씨색 고정 */
   font-size: 14px;
   text-align: center;
   cursor: pointer;
@@ -365,6 +365,11 @@ const StyledButton = styled.button`
   background-color: white;
   font-size: 14px;
   cursor: pointer;
+
+  /* 🔥 여기 두 줄이 핵심 */
+  color: ${({ theme }) => theme.colors.text};   /* 투표하기 텍스트 색 고정 */
+  -webkit-appearance: none;
+  appearance: none;
 
   &:hover {
     border-color: ${({ theme }) => theme.colors.primary};

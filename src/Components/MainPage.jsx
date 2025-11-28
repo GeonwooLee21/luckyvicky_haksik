@@ -62,7 +62,7 @@ const Card = styled.button`
   border-radius: 12px;
   border: 1px solid ${({ theme }) => theme.colors.border};
   background-color: ${({ theme }) => theme.colors.cardBg};
-  
+
   position: relative;
 
   display: flex;
@@ -71,9 +71,15 @@ const Card = styled.button`
 
   font-size: 16px;
   font-weight: 600;
+  color: ${({ theme }) => theme.colors.text};    /* 🔹 버튼 안 텍스트 색 고정 */
 
   cursor: pointer;
   transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease;
+
+  /* 🔹 iOS 기본 버튼 스타일 제거 (system-blue 방지) */
+  -webkit-appearance: none;
+  appearance: none;
+  outline: none;
 
   &:hover {
     transform: translateY(-2px);
@@ -104,7 +110,9 @@ const Overlay = styled.div`
   pointer-events: none;
 `;
 
-const Name = styled.span``;
+const Name = styled.span`
+  color: ${({ theme }) => theme.colors.text};   /* 🔹 식당 이름 색 한 번 더 명시 */
+`;
 
 const Emoji = styled.span`
   position: absolute;

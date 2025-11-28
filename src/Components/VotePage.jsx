@@ -279,6 +279,9 @@ const LevelButton = styled.button`
   background: transparent;
   cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
   opacity: ${({ disabled }) => (disabled ? 0.5 : 1)};
+  /* 🔹 iOS 기본 버튼 스타일 제거 */
+  -webkit-appearance: none;
+  appearance: none;
 `;
 
 const LevelCard = styled.div`
@@ -298,6 +301,7 @@ const LevelCard = styled.div`
 const LevelLabel = styled.div`
   font-size: 14px;
   margin-bottom: 8px;
+  color: ${({ theme }) => theme.colors.text};   /* 🔹 명시적으로 텍스트 색 지정 */
 `;
 
 const CheckSquare = styled.div`
@@ -309,6 +313,7 @@ const CheckSquare = styled.div`
   align-items: center;
   justify-content: center;
   font-size: 22px;
+  color: ${({ theme }) => theme.colors.text};
 `;
 
 const OptionButton = styled.button`
@@ -320,9 +325,12 @@ const OptionButton = styled.button`
   background-color: ${({ theme, $selected }) =>
     $selected ? "#ffe8f3" : theme.colors.cardBg};
   font-size: 14px;
+  color: ${({ theme }) => theme.colors.text};   /* 🔹 기본 글자색 고정 */
   cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
   opacity: ${({ disabled }) => (disabled ? 0.5 : 1)};
   transition: 0.12s ease;
+  -webkit-appearance: none;
+  appearance: none;
 
   &:hover {
     ${({ disabled, theme }) =>
@@ -346,6 +354,8 @@ const SubmitButton = styled.button`
   font-weight: 600;
   cursor: ${({ disabled }) => (disabled ? "default" : "pointer")};
   margin-top: 4px;
+  -webkit-appearance: none;
+  appearance: none;
 
   &:hover {
     ${({ disabled }) =>
@@ -366,6 +376,8 @@ const BackButton = styled.button`
   font-size: 14px;
   cursor: pointer;
   margin-top: 4px;
+  -webkit-appearance: none;
+  appearance: none;
 
   &:hover {
     filter: brightness(0.97);
@@ -394,6 +406,7 @@ const ModalCard = styled.div`
 const ModalText = styled.div`
   font-size: 18px;
   margin-bottom: 20px;
+  color: ${({ theme }) => theme.colors.text};
 `;
 
 const ConfirmButton = styled.button`
@@ -405,4 +418,6 @@ const ConfirmButton = styled.button`
   color: white;
   font-size: 14px;
   cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
 `;

@@ -22,7 +22,7 @@ function buildMessage(data) {
 
   // ① 집계 중 (-1)
   if (waitTime === -1) {
-    return "대기시간 정보 집계중이에요… ⏳";
+    return "대기시간 정보 집계중이에요…⏳";
   }
 
   // ② 숫자 대기시간이 제대로 온 경우
