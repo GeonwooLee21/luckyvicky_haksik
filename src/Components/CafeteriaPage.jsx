@@ -2,6 +2,7 @@
 // FE1 & FE2 공통 상세페이지 레이아웃
 // src/Components/CafeteriaPage.jsx
 // =================================
+
 import styled from "styled-components";
 import { Link, useParams, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";

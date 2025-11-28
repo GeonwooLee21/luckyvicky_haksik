@@ -1,4 +1,8 @@
+// ==============================
 // FE1
+// src/Components/Header.jsx
+// ==============================
+
 import styled from "styled-components";
 
 const Wrapper = styled.header`

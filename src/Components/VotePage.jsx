@@ -1,7 +1,8 @@
-// ======================================================
-// FE2: 투표 화면 + 완료 모달 + 잔여투표횟수 표시 (FE1 레이아웃 적용)
+// ============================
+// FE2
 // src/Components/VotePage.jsx
-// ======================================================
+// ============================
+
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useParams, useNavigate } from "react-router-dom";

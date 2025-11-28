@@ -1,5 +1,5 @@
 // ================================
-// FE1&FE2 Api.js
+// FE1 & FE2 Api.js
 // 백엔드 API 명세서 기준으로 작성
 // ================================
 
@@ -74,13 +74,51 @@ function resetLocalStorageIfNewDay() {
 // 3) 사용자 UID / 토큰 / 유저 생성
 // ================================
 
-// 3-1. 랜덤 UID 생성 및 local storage에 저장 (프론트 클라이언트 고유 식별자)
+// 3-0. Safari 등에서도 동작하는 안전한 UID 생성 헬퍼
+function generateClientUid() {
+  // 예: "uid-llk2p5s-8f9as1k2" 이런 식의 랜덤 문자열
+  return (
+    "uid-" +
+    Date.now().toString(36) +
+    "-" +
+    Math.random().toString(36).slice(2, 11)
+  );
+}
+
+// 3-1. 랜덤 UID 생성 및 localStorage에 저장 (프론트 클라이언트 고유 식별자)
 function getOrCreateClientUid() {
-  let uid = localStorage.getItem("clientUid");
-  if (!uid) {
-    uid = crypto.randomUUID(); // 또는 uuidv4()
-    localStorage.setItem("clientUid", uid);
+  let uid = null;
+
+  // 1) localStorage에서 먼저 시도
+  try {
+    uid = localStorage.getItem("clientUid");
+  } catch (e) {
+    console.warn("[getOrCreateClientUid] localStorage에서 읽기 실패:", e);
   }
+
+  // 2) 없으면 새로 생성
+  if (!uid) {
+    const hasRandomUUID =
+      typeof crypto !== "undefined" &&
+      crypto &&
+      typeof crypto.randomUUID === "function";
+
+    if (hasRandomUUID) {
+      // 크롬/최신 브라우저
+      uid = crypto.randomUUID();
+    } else {
+      // Safari, iOS, 구형 브라우저용 fallback
+      uid = generateClientUid();
+    }
+
+    // 3) 생성한 UID를 localStorage에 저장 (실패해도 앱은 계속 동작하게)
+    try {
+      localStorage.setItem("clientUid", uid);
+    } catch (e) {
+      console.warn("[getOrCreateClientUid] localStorage에 저장 실패:", e);
+    }
+  }
+
   return uid;
 }
 
@@ -239,26 +277,8 @@ export async function getRemainingVotes() {
 }
 
 
-// =================================
-// 9) 지난주 동일 시간대 텍스트용 (임시 더미)
-// FE2 lastWeekText.jsx에서 사용
-// =================================
-export async function getLastWeekStatus(cafeteria) {
-  // TODO: 백엔드 연결되면 교체
-  const dummy = {
-    Gongstaurant: { level: "busy" },
-    Cheomseong: { level: "normal" },
-    Gamggoteria: { level: "relaxed" },
-  };
-
-  return new Promise((resolve) => {
-    setTimeout(() => resolve(dummy[cafeteria]), 200);
-  });
-}
-
-
 // ==================================
-// 10) 대기시간 조회
+// 9) 대기시간 조회
 // GET /api/restaurant/{restaurant-id}/wait-time
 // 응답 예:
 // {

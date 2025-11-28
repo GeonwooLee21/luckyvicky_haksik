@@ -2,6 +2,7 @@
 // FE1
 // src/Components/AppLayout.jsx
 // ===================================
+
 import styled from "styled-components";
 import Header from "./Header";
 import Footer from "./Footer";

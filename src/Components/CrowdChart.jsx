@@ -1,5 +1,7 @@
+// ==============================
 // FE2 - 3개 식당 더미데이터 공통 사용
-// 30분 단위 { time: "HH:MM", visitors: N } → 1시간 단위 막대 그래프 (디자인 강화 버전)
+// src/Components/CrowdChart.jsx
+// ==============================
 
 import React from "react";
 
@@ -28,6 +30,7 @@ function formatHourLabel(h) {
   return `${h}`;
 }
 
+// 30분 단위 { time: "HH:MM", visitors: N } → 1시간 단위 막대 그래프
 export default function CrowdChart({ data }) {
   if (!data || data.length === 0) {
     return (

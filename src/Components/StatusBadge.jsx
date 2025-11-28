@@ -1,5 +1,8 @@
+// ================================
 // FE1
 // src/Components/StatusBadge.jsx
+// ================================
+
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { getAllRestaurantStatus } from "../Api";

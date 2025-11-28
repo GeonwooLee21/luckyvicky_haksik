@@ -2,6 +2,7 @@
 // FE 2
 // src/Components/LuckyVickyModal.jsx
 // ==================================
+
 import React from "react";
 import "./LuckyVickyModal.css";
 

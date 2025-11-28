@@ -1,5 +1,8 @@
+// ===============================
 // FE1
 // src/App.js
+// ===============================
+
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import MainPage from "./Components/MainPage";
 import CafeteriaMain from "./Components/CafeteriaPage";

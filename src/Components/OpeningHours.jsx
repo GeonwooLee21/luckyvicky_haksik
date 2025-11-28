@@ -1,6 +1,6 @@
 // ================================
 // FE1
-// src/utils/openingHours.js
+// src/Components/OpeningHours.jsx
 // ================================
 
 // 1) 식당별 운영 시간 설정

@@ -1,4 +1,8 @@
+// ===============================
+// FE1
 // src/Components/WaitTimeText.jsx
+// ===============================
+
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { getWaitTime } from "../Api";
@@ -26,7 +30,7 @@ function buildMessage(data) {
     if (waitTime <= 0) {
       return "지금 바로 입장할 수 있을 것 같아요! 🎉";
     }
-    return `지금 들어가면 약 ${waitTime}분 정도 걸릴 것 같아요. ⏳`;
+    return `⏳ ${waitTime}분 정도 기다리면 식사하실 수 있어요 ⏳`;
   }
 
   // ③ 그 외 애매한 경우
