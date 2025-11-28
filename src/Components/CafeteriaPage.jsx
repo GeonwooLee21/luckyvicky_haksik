@@ -270,12 +270,14 @@ function CafeteriaPage() {
 export default CafeteriaPage;
 
 /* ---------------- styled-components ---------------- */
-
 const Wrapper = styled.div`
   width: 100%;
   max-width: 350px;
   margin: 0 auto;
   margin-top: 24px;
+
+  /* 아래쪽에 여유 + iOS safe-area까지 고려 */
+  padding-bottom: calc(env(safe-area-inset-bottom) + 24px);
 
   display: flex;
   flex-direction: column;
@@ -297,7 +299,7 @@ const MainTextCard = styled(Card)`
   font-weight: 500;
 `;
 
-// ✅ MainTextCard 안에서 쓰는 서브 문구 (운영시간 안내)
+// MainTextCard 안에서 쓰는 서브 문구 (운영시간 안내)
 const SubText = styled.span`
   display: block;
   margin-top: 6px;
@@ -329,6 +331,9 @@ const ButtonRow = styled.div`
   display: flex;
   gap: 12px;
   margin-top: 12px;
+
+  /* 버튼 아래 부분 공간 확보 */
+  margin-bottom: calc(env(safe-area-inset-bottom) + 15px);
 `;
 
 const StyledLink = styled(Link)`
