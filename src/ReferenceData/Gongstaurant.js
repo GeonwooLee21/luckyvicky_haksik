@@ -1,7 +1,7 @@
-// ===============================
+// =================================
 // 공식당 방문자수 더미데이터
-// src/Dummy/Gongstaurant_Dummy.js
-// ===============================
+// src/ReferenceData/Gongstaurant.js
+// =================================
 
 export const GONGSTAURANT_DUMMY = [
   { time: "10:00", visitors: 20 },

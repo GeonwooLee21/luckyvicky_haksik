@@ -1,6 +1,6 @@
 // ===============================
 // 복지관 방문자 수 더미데이터
-// src/Dummy/Cheomseong_Dummy.js
+// src/ReferenceData/Cheomseong.js
 // ===============================
 
 export const CHEOMSEONG_DUMMY = [

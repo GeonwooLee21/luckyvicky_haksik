@@ -10,9 +10,9 @@ import CrowdChart from "./CrowdChart";
 import { isOpenNow, getNextOpeningInfo } from "./OpeningHours";
 import LuckyVickyModal from "./LuckyVickyModal";
 import { getRestaurantStatus, getRemainingVotes } from "../Api";
-import { GONGSTAURANT_DUMMY } from "../Dummy/Gongstaurant_Dummy";
-import { GAMGGOTERIA_DUMMY } from "../Dummy/Gamggoteria_Dummy";
-import { CHEOMSEONG_DUMMY } from "../Dummy/Cheomseong_Dummy";
+import { GONGSTAURANT_DUMMY } from "../ReferenceData/Gongstaurant";
+import { GAMGGOTERIA_DUMMY } from "../ReferenceData/Gamggoteria";
+import { CHEOMSEONG_DUMMY } from "../ReferenceData/Cheomseong";
 import WaitTimeText from "./WaitTimeText";
 
 // FE 라우트 name → 백엔드 restaurantId 매핑
@@ -231,7 +231,7 @@ function CafeteriaPage() {
             <>
               투표해주시면
               <br />
-              시간대별 혼잡도 그래프를
+              시간대별 방문자 수 그래프를
               <br />
               확인하실 수 있어요!
             </>
@@ -241,7 +241,7 @@ function CafeteriaPage() {
         <ClosedOverlayCard>
           운영 시간이 되면
           <br />
-          혼잡도 그래프와 투표 기능이 열려요!
+          시간대별 방문자 수 그래프와 투표 기능이 열려요!
         </ClosedOverlayCard>
       )}
 

@@ -10,18 +10,18 @@
 export const CAFETERIA_HOURS = {
   // 공식당 운영 시간
   Gongstaurant: [
-    { days: [1, 2, 3, 4, 5], open: "10:00", close: "15:00", label: "중식" },
-    { days: [1, 2, 3, 4, 5], open: "16:00", close: "23:00", label: "석식" },
+    { days: [1, 2, 3, 4, 5, 6], open: "10:00", close: "15:00", label: "중식" },
+    { days: [1, 2, 3, 4, 5, 6], open: "15:00", close: "18:00", label: "석식" },
   ],
 
   // 복지관 운영 시간
   Cheomseong: [
-    { days: [1, 2, 3, 4, 5], open: "11:15", close: "21:30", label: "중식" },
+    { days: [1, 2, 3, 4, 5, 6], open: "11:15", close: "18:00", label: "중식" },
   ],
 
   // 감꽃식당 운영 시간
   Gamggoteria: [
-    { days: [1, 2, 3, 4, 5], open: "11:30", close: "21:30", label: "영업" },
+    { days: [1, 2, 3, 4, 5, 6], open: "11:30", close: "18:00", label: "중식" },
   ],
 };
 

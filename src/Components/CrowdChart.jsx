@@ -89,7 +89,7 @@ export default function CrowdChart({ data }) {
           color: "#555",
         }}
       >
-        <span>시간대별 혼잡도</span>
+        <span>시간대별 방문자 수</span>
         <span
           style={{
             fontSize: 10,

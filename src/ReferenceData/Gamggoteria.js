@@ -1,6 +1,6 @@
 // ===============================
 // 감꽃식당 방문자 수 더미데이터
-// src/Dummy/Gamggoteria_Dummy.js
+// src/ReferenceData/Gamggoteria.js
 // ===============================
 
 export const GAMGGOTERIA_DUMMY = [
